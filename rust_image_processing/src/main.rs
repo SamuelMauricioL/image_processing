@@ -1,38 +1,27 @@
 use image::{DynamicImage, GenericImageView, ImageBuffer, ImageReader, Rgb};
 
 fn main() {
-    let imagen: DynamicImage = ImageReader::open("./images/temp/image_test.png")
+    let temp_path: String = String::from("./images/temp");
+    let output_path: String = String::from("./images/filters_applied");
+    let image_test_path: String = String::from(temp_path + "/image_test.png");
+    let image_grayscale_path: String = String::from(output_path.clone() + "/gray_scale_image.jpg");
+    let image_inverted_path: String = String::from(output_path.clone() + "/inverted_image.jpg");
+
+    let imagen: DynamicImage = ImageReader::open(image_test_path)
         .unwrap()
         .decode()
         .unwrap();
 
     let imagen_gray_scale: DynamicImage = apply_grayscale(imagen.clone());
-    imagen_gray_scale
-        .save("images/filters_applied/gray_scale_image.jpg")
-        .unwrap();
+    imagen_gray_scale.save(image_grayscale_path).unwrap();
 
     let inverted_image: DynamicImage = apply_color_inversion(imagen.clone());
-    inverted_image
-        .save("images/filters_applied/inverted_image.jpg")
-        .unwrap();
+    inverted_image.save(image_inverted_path).unwrap();
 }
 
 #[no_mangle]
 pub fn main_rust() {
-    let imagen: DynamicImage = ImageReader::open("./images/temp/image_test.png")
-        .unwrap()
-        .decode()
-        .unwrap();
-
-    let imagen_gray_scale: DynamicImage = apply_grayscale(imagen.clone());
-    imagen_gray_scale
-        .save("images/filters_applied/gray_scale_image.jpg")
-        .unwrap();
-
-    let inverted_image: DynamicImage = apply_color_inversion(imagen.clone());
-    inverted_image
-        .save("images/filters_applied/inverted_image.jpg")
-        .unwrap();
+    main();
 }
 
 #[no_mangle]
