@@ -1,30 +1,38 @@
 use image::{DynamicImage, GenericImageView, ImageBuffer, ImageReader, Rgb};
 
 fn main() {
-    let imagen: DynamicImage = ImageReader::open("./images/image_test.png")
+    let imagen: DynamicImage = ImageReader::open("./images/temp/image_test.png")
         .unwrap()
         .decode()
         .unwrap();
 
     let imagen_gray_scale: DynamicImage = apply_grayscale(imagen.clone());
-    imagen_gray_scale.save("imagen_gray_scale.jpg").unwrap();
+    imagen_gray_scale
+        .save("images/filters_applied/gray_scale_image.jpg")
+        .unwrap();
 
     let inverted_image: DynamicImage = apply_color_inversion(imagen.clone());
-    inverted_image.save("inverted_image.jpg").unwrap();
+    inverted_image
+        .save("images/filters_applied/inverted_image.jpg")
+        .unwrap();
 }
 
 #[no_mangle]
 pub fn main_rust() {
-    let imagen: DynamicImage = ImageReader::open("./images/image_test.png")
+    let imagen: DynamicImage = ImageReader::open("./images/temp/image_test.png")
         .unwrap()
         .decode()
         .unwrap();
 
     let imagen_gray_scale: DynamicImage = apply_grayscale(imagen.clone());
-    imagen_gray_scale.save("imagen_escala_grises.jpg").unwrap();
+    imagen_gray_scale
+        .save("images/filters_applied/gray_scale_image.jpg")
+        .unwrap();
 
     let inverted_image: DynamicImage = apply_color_inversion(imagen.clone());
-    inverted_image.save("imagen_invertida.jpg").unwrap();
+    inverted_image
+        .save("images/filters_applied/inverted_image.jpg")
+        .unwrap();
 }
 
 #[no_mangle]
@@ -45,14 +53,14 @@ pub fn apply_grayscale(image: DynamicImage) -> DynamicImage {
 }
 
 #[no_mangle]
-pub fn apply_color_inversion(imagen: DynamicImage) -> DynamicImage {
-    let mut nueva_imagen: ImageBuffer<Rgb<u8>, Vec<u8>> = imagen.to_rgb8();
+pub fn apply_color_inversion(image: DynamicImage) -> DynamicImage {
+    let mut new_image: ImageBuffer<Rgb<u8>, Vec<u8>> = image.to_rgb8();
 
-    for pixel in nueva_imagen.pixels_mut() {
+    for pixel in new_image.pixels_mut() {
         pixel[0] = 255 - pixel[0];
         pixel[1] = 255 - pixel[1];
         pixel[2] = 255 - pixel[2];
     }
 
-    DynamicImage::ImageRgb8(nueva_imagen)
+    DynamicImage::ImageRgb8(new_image)
 }
