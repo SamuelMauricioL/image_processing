@@ -6,32 +6,46 @@ fn main() {
         .decode()
         .unwrap();
 
-    let imagen_escala_grises: DynamicImage = apply_grayscale(imagen.clone());
-    imagen_escala_grises
-        .save("imagen_escala_grises.jpg")
-        .unwrap();
+    let imagen_gray_scale: DynamicImage = apply_grayscale(imagen.clone());
+    imagen_gray_scale.save("imagen_gray_scale.jpg").unwrap();
 
-    let imagen_invertida: DynamicImage = apply_color_inversion(imagen.clone());
-    imagen_invertida.save("imagen_invertida.jpg").unwrap();
+    let inverted_image: DynamicImage = apply_color_inversion(imagen.clone());
+    inverted_image.save("inverted_image.jpg").unwrap();
 }
 
-fn apply_grayscale(imagen: DynamicImage) -> DynamicImage {
-    let (ancho, alto) = imagen.dimensions();
-    let mut nueva_imagen: ImageBuffer<Rgb<u8>, Vec<u8>> = ImageBuffer::new(ancho, alto);
+#[no_mangle]
+pub fn main_rust() {
+    let imagen: DynamicImage = ImageReader::open("./images/image_test.png")
+        .unwrap()
+        .decode()
+        .unwrap();
 
-    for y in 0..alto {
-        for x in 0..ancho {
-            let pixel = imagen.get_pixel(x, y);
+    let imagen_gray_scale: DynamicImage = apply_grayscale(imagen.clone());
+    imagen_gray_scale.save("imagen_escala_grises.jpg").unwrap();
+
+    let inverted_image: DynamicImage = apply_color_inversion(imagen.clone());
+    inverted_image.save("imagen_invertida.jpg").unwrap();
+}
+
+#[no_mangle]
+pub fn apply_grayscale(image: DynamicImage) -> DynamicImage {
+    let (width, height) = image.dimensions();
+    let mut new_image: ImageBuffer<Rgb<u8>, Vec<u8>> = ImageBuffer::new(width, height);
+
+    for y in 0..height {
+        for x in 0..width {
+            let pixel = image.get_pixel(x, y);
             let gris =
                 (0.3 * pixel[0] as f32 + 0.59 * pixel[1] as f32 + 0.11 * pixel[2] as f32) as u8;
-            nueva_imagen.put_pixel(x, y, Rgb([gris, gris, gris]));
+            new_image.put_pixel(x, y, Rgb([gris, gris, gris]));
         }
     }
 
-    DynamicImage::ImageRgb8(nueva_imagen)
+    DynamicImage::ImageRgb8(new_image)
 }
 
-fn apply_color_inversion(imagen: DynamicImage) -> DynamicImage {
+#[no_mangle]
+pub fn apply_color_inversion(imagen: DynamicImage) -> DynamicImage {
     let mut nueva_imagen: ImageBuffer<Rgb<u8>, Vec<u8>> = imagen.to_rgb8();
 
     for pixel in nueva_imagen.pixels_mut() {
