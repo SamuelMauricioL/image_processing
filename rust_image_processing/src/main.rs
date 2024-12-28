@@ -10,7 +10,7 @@ fn main() {
 
     if let Ok(files) = list_files_in_folder(temp_path) {
         for file_name in files {
-            println!("{}", file_name);
+            println!("{:}", file_name);
             let image_path: String = format!("{}/{}", temp_path, file_name);
             let image: DynamicImage = ImageReader::open(image_path).unwrap().decode().unwrap();
 
@@ -29,10 +29,10 @@ fn apply_filters(image: DynamicImage, file_name: String) {
     let grayscale_filter = GrayscaleFilter;
     let color_inversion_filter = ColorInversionFilter;
 
-    let gray_scale_image = grayscale_filter.apply(image.clone());
+    let gray_scale_image = grayscale_filter.apply(&image);
     gray_scale_image.save(image_grayscale_path).unwrap();
 
-    let inverted_image = color_inversion_filter.apply(image);
+    let inverted_image = color_inversion_filter.apply(&image);
     inverted_image.save(image_inverted_path).unwrap();
 }
 
