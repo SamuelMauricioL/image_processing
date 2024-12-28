@@ -1,7 +1,9 @@
 mod filters;
+mod utils;
 
 use filters::{ColorInversionFilter, GrayscaleFilter, ImageFilter};
 use image::{DynamicImage, ImageReader};
+use utils::list_files_in_folder;
 
 fn main() {
     let temp_path: &str = "./images/temp";
@@ -12,6 +14,14 @@ fn main() {
 
     let grayscale_filter = GrayscaleFilter;
     let color_inversion_filter = ColorInversionFilter;
+
+    if let Ok(files) = list_files_in_folder(temp_path) {
+        for file in files {
+            println!("{}", file);
+        }
+    } else {
+        eprintln!("Error al obtener la lista de archivos");
+    }
 
     let imagen: DynamicImage = ImageReader::open(image_test_path)
         .unwrap()
